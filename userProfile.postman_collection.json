@@ -1,0 +1,294 @@
+{
+	"info": {
+		"_postman_id": "ab476e90-a604-4b9e-8bdd-897fa767c26f",
+		"name": "userProfile",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "12886809"
+	},
+	"item": [
+		{
+			"name": "postUserProfile",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"//set random user id for every request\r",
+							"pm.environment.set(\"user_id\", _.random(100,999))\r",
+							"\r",
+							"\r",
+							"//set random nid for every request\r",
+							"pm.environment.set(\"nid\", _.random(1000000000000,9999999999999))\r",
+							"\r",
+							"\r",
+							"\r",
+							"//Generate random Date of Birth in MM/DD/YYYY Format\r",
+							"function randomDate(start, end) {\r",
+							"    return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));\r",
+							"}\r",
+							"var date = randomDate(new Date(2000, 0, 1), new Date());\r",
+							"var formattedDate = (date.getMonth()+1) + '/' + date.getDate() + '/' + date.getFullYear();\r",
+							"pm.environment.set(\"DOB\" , formattedDate);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let jsonData = pm.response.json();",
+							"",
+							"//set user full name as environment variable",
+							"var jsonData1 = JSON.parse(responseBody);",
+							"pm.environment.set(\"user_name\", jsonData[\"full_name\"]);",
+							"",
+							"",
+							"",
+							"//checking status code assertion",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(201);",
+							"});",
+							"",
+							"//checking user id assertion",
+							"pm.test(\"User id assertion\", function(){ ",
+							"pm.expect(jsonData.id).to.equal(pm.environment.get(\"user_id\"));",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\": {{user_id}},\r\n    \"membership_no\": \"S-{{$timestamp}}\",\r\n    \"full_name\": \"{{$randomFullName}}\",\r\n    \"dob\": \"{{DOB}}\",\r\n    \"kids\": \"None\",\r\n    \"email\": \"{{$randomEmail}}\",\r\n    \"gender\": \"M\",\r\n    \"address\": \"{{$randomStreetAddress}}\",\r\n    \"marital_status\": \"single\",\r\n    \"verification_id_type\": \"NID\",\r\n    \"verification_id_no\": \"{{nid}}\",\r\n    \"status\": \"FullMember\",\r\n    \"msisdn\": \"880{{$randomPhoneNumber}}\"\r\n  }",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{BaseUrl}}/user_profile",
+					"host": [
+						"{{BaseUrl}}"
+					],
+					"path": [
+						"user_profile"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getUserProfile",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "putUserProfile",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"//set random nid for every request\r",
+							"pm.environment.set(\"nid\", _.random(1000000000000,9999999999999))\r",
+							"\r",
+							"\r",
+							"//Generate random Date of Birth in MM/DD/YYYY Format\r",
+							"function randomDate(start, end) {\r",
+							"    return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));\r",
+							"}\r",
+							"var date = randomDate(new Date(2000, 0, 1), new Date());\r",
+							"var formattedDate = (date.getMonth()+1) + '/' + date.getDate() + '/' + date.getFullYear();\r",
+							"pm.environment.set(\"DOB\" , formattedDate);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let jsonData = pm.response.json();",
+							"",
+							"//checking status code assertion",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"",
+							"//set user full name as environment variable",
+							"var jsonData1 = JSON.parse(responseBody);",
+							"pm.environment.set(\"membership_number\", jsonData[\"membership_no\"]);",
+							"",
+							"",
+							"//Checking membership field validation",
+							"pm.test(\"Membership number assertion\", function(){ ",
+							"pm.expect(jsonData.membership_no).to.equal(pm.environment.get(\"membership_number\"));",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"membership_no\": \"S-{{$timestamp}}\",\r\n    \"full_name\": \"{{$randomFullName}}\",\r\n    \"dob\": \"{{DOB}}\",\r\n    \"kids\": \"None\",\r\n    \"email\": \"{{$randomEmail}}\",\r\n    \"gender\": \"M\",\r\n    \"address\": \"{{$randomStreetAddress}}\",\r\n    \"marital_status\": \"single\",\r\n    \"verification_id_type\": \"NID\",\r\n    \"verification_id_no\": \"{{nid}}\",\r\n    \"status\": \"FullMember\",\r\n    \"msisdn\": \"880{{$randomPhoneNumber}}\"\r\n  }",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{BaseUrl}}/user_profile/{{user_id}}",
+					"host": [
+						"{{BaseUrl}}"
+					],
+					"path": [
+						"user_profile",
+						"{{user_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "patchUserProfile",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"//set random nid for every request\r",
+							"pm.environment.set(\"nid\", _.random(1000000000000,9999999999999))\r",
+							"\r",
+							"\r",
+							"//Generate random Date of Birth in MM/DD/YYYY Format\r",
+							"function randomDate(start, end) {\r",
+							"    return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));\r",
+							"}\r",
+							"var date = randomDate(new Date(2000, 0, 1), new Date());\r",
+							"var formattedDate = (date.getMonth()+1) + '/' + date.getDate() + '/' + date.getFullYear();\r",
+							"pm.environment.set(\"DOB\" , formattedDate);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let jsonData = pm.response.json();",
+							"",
+							"//checking status code assertion",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"",
+							"//set user full name as environment variable",
+							"var jsonData1 = JSON.parse(responseBody);",
+							"pm.environment.set(\"membership_number\", jsonData[\"membership_no\"]);",
+							"",
+							"",
+							"//Checking name field validation",
+							"pm.test(\"Membership number assertion\", function(){ ",
+							"pm.expect(jsonData.membership_no).to.equal(pm.environment.get(\"membershipNumber\"));",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"full_name\": \"{{$randomFullName}}\"\r\n  }",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{BaseUrl}}/user_profile/{{user_id}}",
+					"host": [
+						"{{BaseUrl}}"
+					],
+					"path": [
+						"user_profile",
+						"{{user_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "deleteUserProfile",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let jsonData = pm.response.json();",
+							"",
+							"//checking status code assertion",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{BaseUrl}}/user_profile/{{user_id}}",
+					"host": [
+						"{{BaseUrl}}"
+					],
+					"path": [
+						"user_profile",
+						"{{user_id}}"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
